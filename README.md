@@ -1,3 +1,2 @@
-# - 老鼠走迷宮 For C++
-主程式Project1.cpp<br>
-按下Project1.exe執行
+# 大二時期有關資料結構與演算法作業
+使用C++ Build撰寫
