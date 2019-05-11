@@ -1,0 +1,381 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#include <stdlib.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm1 *Form1;
+class node
+{
+public:
+        int data;
+        node *prev;
+        node *next;
+};
+class node2
+{
+public:
+        int data;
+        node2 *next;
+};
+node *head;
+
+node2 *first;
+node2 *last;
+
+
+
+node* newNode(int);
+node* searchNode(int);
+node2 * searchNode2(int);
+void insertNode(node*,node*);
+void deleteNode(node *);
+void printNode();
+void printNode2();
+void printStack();
+
+node* newNode(int n)
+{
+        node *p;
+        p=new node;
+        p->data=n;
+        p->prev=NULL;
+        p->next=NULL;
+        return p;
+}
+void insertNode(node* x,node* p)
+{
+        p->prev=x;
+        p->next=x->next;
+        x->next->prev=p;
+        x->next=p;
+}
+void deleteNode(node* p)
+{
+        if(p==head)
+        {
+                Form1->Memo1->Lines->Add("沒有節點了");
+        }
+        else
+        {
+                p->prev->next=p->next;
+                p->next->prev=p->prev;
+                delete[] p;
+        }
+}
+node* searchNode(int n)
+{
+        node *p;
+        for(p=head->next;(p->data)!=n && (p!=head);p=p->next);
+        return p;
+}
+node2* searchNode2(int n)
+{
+        node2 *p;
+        for(p=first->next;p!=first;p=p->next)
+        {
+                if(p->data==n)
+                {
+                        return p;
+                }
+        }
+        return p;
+}
+void printNode()
+{
+        node *p;
+        String output="<=>";
+        for(p=head->next;(p)!=head;p=p->next)
+        {
+                output+=IntToStr(p->data)+"<=>";
+        }
+        Form1->Memo1->Lines->Add(output);
+}
+void printNode2()
+{
+        String output="";
+        node2 *p;
+        for(p=first->next;(p)!=first;p=p->next)
+        {
+                output+=IntToStr(p->data)+"=>";
+        }
+        Form1->Memo2->Lines->Add(output);
+}
+void printStack()
+{
+        node *p;
+        String output="<=>";
+        for(p=head->next;(p)!=head;p=p->next)
+        {
+                output+=IntToStr(p->data)+"<=>";
+        }
+        Form1->Memo3->Lines->Add(output);
+}
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+        : TForm(Owner)
+{
+        Memo1->Clear();
+        Memo2->Clear();
+        Memo3->Clear();
+        head=new node;
+        head->prev=head;
+        head->next=head;
+        head->data=NULL;
+
+        first=new node2;
+        first->next=first;
+        first->data=NULL;
+        last=first;
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button1Click(TObject *Sender)
+{
+        int n=StrToInt(Edit1->Text);
+        node *p;
+        p=newNode(n);
+        insertNode(head,p);
+        printNode();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button2Click(TObject *Sender)
+{
+        int n=StrToInt(Edit1->Text);
+        node *p;
+        p=newNode(n);
+        insertNode(head->prev,p);
+        printNode();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button3Click(TObject *Sender)
+{
+        int n=StrToInt(Edit2->Text);
+        node *p;
+        p=searchNode(n);
+        if(p==head) Memo1->Lines->Add("沒找到...");
+        else Memo1->Lines->Add("找到了!");
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button4Click(TObject *Sender)
+{
+        srand(time(NULL));
+        int range=StrToInt(Edit3->Text);
+        int n=StrToInt(Edit4->Text);
+        for(int i=0;i<n;i++)
+        {
+                node *p;
+                int r=rand()%range+1;
+                p=newNode(r);
+                insertNode(head,p);
+        }
+        printNode();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button5Click(TObject *Sender)
+{
+        deleteNode(head->next);
+        printNode();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button6Click(TObject *Sender)
+{
+        deleteNode(head->prev);
+        printNode();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button7Click(TObject *Sender)
+{
+        int n=StrToInt(Edit2->Text);
+        node *p;
+        p=searchNode(n);
+        if(p==head) Memo1->Lines->Add("沒找到...");
+        else
+        {
+                int x=StrToInt(Edit1->Text);
+                node *q;
+                q=newNode(x);
+                insertNode(p->prev,q);
+                printNode();
+        }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button8Click(TObject *Sender)
+{
+        int n=StrToInt(Edit2->Text);
+        node *p;
+        p=searchNode(n);
+        if(p==head) Memo1->Lines->Add("沒找到...");
+        else
+        {
+                int x=StrToInt(Edit1->Text);
+                node *q;
+                q=newNode(x);
+                insertNode(p,q);
+                printNode();
+        }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button9Click(TObject *Sender)
+{
+        int n=StrToInt(Edit2->Text);
+        node *p;
+        p=searchNode(n);
+        if(p==head) Memo1->Lines->Add("沒找到...");
+        else
+        {
+                deleteNode(p);
+                printNode();
+        }
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::Button10Click(TObject *Sender)
+{
+        node *p;
+        while(head->next != head)
+        {
+                deleteNode(head->next);
+        }
+        Memo1->Clear();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm1::PageControl1Change(TObject *Sender)
+{
+        PageControl2->ActivePageIndex =  PageControl1->ActivePageIndex;
+        node *p;
+        while(head->next != head)
+        {
+                deleteNode(head->next);
+        }
+        Memo1->Clear();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button11Click(TObject *Sender)
+{
+        node2 *p;
+        int data=StrToInt(Edit5->Text);
+        p=new node2;
+        if(first->next==first) last=p;
+        p->data=data;
+        p->next=first->next;
+        first->next=p;
+        printNode2();
+        Edit5->Text=IntToStr(data+10);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button12Click(TObject *Sender)
+{
+        node2 *p;
+        int data=StrToInt(Edit5->Text);
+        p=new node2;
+        if(first==first->next)
+        {
+                last=p;
+                p->data=data;
+                p->next=first->next;
+                first->next=p;
+        }
+        else
+        {
+                p->data=data;
+                p->next=first;
+                last->next=p;
+                last=p;
+        }
+        printNode2();
+        Edit5->Text=IntToStr(data+10);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button13Click(TObject *Sender)
+{
+        if(first->next==first)
+        {
+                Memo2->Lines->Add("沒有節點了...");
+        }
+        else
+        {
+                node2 *p;
+                p=first->next;
+                first->next=first->next->next;
+                delete[] p;
+                printNode2();
+        }
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::Button14Click(TObject *Sender)
+{
+        int data=StrToInt(Edit6->Text);
+        node2 *p=searchNode2(data);
+        if(p->data==NULL)
+        {
+                Memo2->Lines->Add("沒找到");
+        }
+        else
+        {
+                Memo2->Lines->Add("找到了!!");
+        }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button16Click(TObject *Sender)
+{
+        int data=StrToInt(Edit6->Text);
+        int n=StrToInt(Edit5->Text);
+        node2 *x=searchNode2(data);
+        node2 *p=new node2;
+        if(x->data!=NULL)
+        {
+                p->data=n;
+                p->next=x->next;
+                x->next=p;
+                printNode2();
+        }
+        else
+        {
+                Memo2->Lines->Add("找不到");
+        }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button15Click(TObject *Sender)
+{
+        Memo2->Clear();
+        while(first->next!= first)
+        {
+                node2 *p;
+                p=first->next;
+                first->next=first->next->next;
+                delete[] p;
+        }
+}
+//---------------------------------------------------------------------------
+
+
+
+
+void __fastcall TForm1::Button17Click(TObject *Sender)
+{
+        int n=StrToInt(Edit7->Text);
+        node *p;
+        p=newNode(n);
+        insertNode(head,p);
+        printStack();
+        Edit7->Text=IntToStr(n+10);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::Button18Click(TObject *Sender)
+{
+        deleteNode(head->prev);
+        printStack();        
+}
+//---------------------------------------------------------------------------
+
